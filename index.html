@@ -1,7 +1,4 @@
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,10 +58,6 @@
         html { scroll-behavior: smooth; }
         body {
             font-family: var(--font-body);
-            background-color: var(--bg-light);
-            overflow-x: hidden;
-            overflow-y: hidden; /* Hide scrollbar while cover is active */
-            /* [DIUBAH] Latar belakang global dihapus, dikembalikan ke warna dasar */
             background-color: var(--bg-off-white);
             color: var(--text-dark);
         } 
@@ -72,7 +65,9 @@
         /* Cover Page */
         /* [DIUBAH] Mengubah posisi cover agar menjadi bagian dari scroll */
         #cover {
-            position: relative; /* Bukan 'fixed' lagi */ /* [DIUBAH] Menambahkan kembali background untuk cover */ background-image: url('https://github.com/wayanku/undangan-ulang-tahun-oktavianti/blob/main/latar%20(1).png?raw=true'); background-size: cover; background-position: center;
+            position: relative;
+            /* Changed from fixed to relative, added background */
+            background-image: url('https://github.com/wayanku/undangan-ulang-tahun-oktavianti/blob/main/latar%20(1).png?raw=true'); background-size: cover; background-position: center;
             width: 100%; height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
         }
@@ -86,8 +81,12 @@
             animation: fadeInUp 1.5s ease-out 0.3s forwards;
         } 
         .background-slider {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; /* [DIUBAH] Tinggi menjadi 100% */
-            position: absolute; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; /* [DIUBAH] Menggunakan 100vh */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
         }
         /* [BARU] Styling untuk kartu Sweet 17 di cover */
         .sweet-card {
@@ -176,7 +175,7 @@
         } 
         
         .cover-content {
-            z-index: 2;
+            z-index: 1;
             padding: 20px;
             /* [DIUBAH] Menambahkan efek parallax */
             transform: translateZ(0);
@@ -191,7 +190,7 @@
             bottom: 0; /* [DIUBAH] Mengembalikan posisi balon ke dasar halaman */
             left: 0; /* [DIUBAH] Pindah ke pojok kiri */
             width: clamp(300px, 55vw, 500px); /* [DIUBAH] Ukuran diperbesar */
-            z-index: 1;
+            z-index: 2;
             opacity: 0;
             animation: fadeInUp 1.2s ease-out 1s forwards; 
         }
@@ -202,7 +201,7 @@
             bottom: 0; /* [DIUBAH] Mengembalikan posisi balon ke dasar halaman */
             right: 0;
             width: clamp(300px, 55vw, 500px); /* [DIUBAH] Ukuran diperbesar */
-            z-index: 1;
+            z-index: 2;
             opacity: 0;
             animation: fadeInUp 1.2s ease-out 1.2s forwards; /* Sedikit delay agar muncul setelah balon kiri */ 
             transform: scaleX(-1); /* Membalik gambar agar menghadap ke dalam */
@@ -898,6 +897,65 @@
             /* [BARU] Diperlukan untuk animasi gelombang suara */
             position: relative;
         }
+    
+        /* [ADDED] Missing keyframes animations */
+        @keyframes card-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% center;
+            }
+            100% {
+                background-position: -200% center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+    
+        /* [ADDED] Performance optimizations */
+        .sweet-card,
+        .event-card-new,
+        #gift-box {
+            will-change: transform;
+        }
+        
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .animated-element {
+            contain: layout style paint;
+        }
+
     </style>
     <style>
         /* [BARU] Styling untuk Pre-Cover yang dipindahkan dari inline style */
@@ -980,6 +1038,65 @@
             font-family: var(--font-body); font-size: 1rem; font-weight: 600; cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 5px 15px rgba(142, 33, 56, 0.3);
         }
+    
+        /* [ADDED] Missing keyframes animations */
+        @keyframes card-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% center;
+            }
+            100% {
+                background-position: -200% center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+    
+        /* [ADDED] Performance optimizations */
+        .sweet-card,
+        .event-card-new,
+        #gift-box {
+            will-change: transform;
+        }
+        
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .animated-element {
+            contain: layout style paint;
+        }
+
     </style>
 </head>
 <style>
@@ -1074,6 +1191,65 @@
                 transform: translateY(0);
             }
         }
+    
+        /* [ADDED] Missing keyframes animations */
+        @keyframes card-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% center;
+            }
+            100% {
+                background-position: -200% center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+    
+        /* [ADDED] Performance optimizations */
+        .sweet-card,
+        .event-card-new,
+        #gift-box {
+            will-change: transform;
+        }
+        
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .animated-element {
+            contain: layout style paint;
+        }
+
     </style>
 <body style="overflow: hidden;">
 
@@ -1188,6 +1364,65 @@
             transition: opacity 0.8s ease-out, visibility 0.8s, transform 0.8s ease-out;
         }
 
+    
+        /* [ADDED] Missing keyframes animations */
+        @keyframes card-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% center;
+            }
+            100% {
+                background-position: -200% center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+    
+        /* [ADDED] Performance optimizations */
+        .sweet-card,
+        .event-card-new,
+        #gift-box {
+            will-change: transform;
+        }
+        
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .animated-element {
+            contain: layout style paint;
+        }
+
     </style>
 
     <!-- =================================
@@ -1222,11 +1457,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- [BARU] Balon di pojok kanan bawah -->
-            <img src="https://github.com/wayanku/undangan-ulang-tahun-oktavianti/blob/main/balon%20pjok%20.webp?raw=true" alt="Balloons Left" class="cover-balloons">
-            <!-- [BARU] Balon baru di pojok kanan -->
-            <img src="https://github.com/wayanku/undangan-ulang-tahun-oktavianti/blob/main/ini%20sebelah%20kanan%20.png?raw=true" alt="Balloons Right" class="cover-balloons-right">
         </div>
         <!-- [DIPINDAHKAN] Balon dipindahkan ke luar .cover-content agar tidak terpotong -->
         <!-- [DIHAPUS] Balon duplikat dihapus, hanya satu set yang diperlukan -->
@@ -1243,7 +1473,7 @@
         <div id="invitation-content" style="display: none;">
             
             <!-- Music Player & Control Button -->
-            <audio id="background-music" loop src="https://github.com/wayanku/undangan-ulang-tahun-oktavianti/raw/refs/heads/main/ABBA%20-%20Dancing%20Queen%20(Official%20Music%20Video).mp3"></audio>
+            <audio id="background-music" loop src="https://peljkofgteuqedzfjlhi.supabase.co/storage/v1/object/public/mancing%20jepang/Taylor%20Swift%20-%20Betty.mp3"></audio>
 
             <!-- Hero & Countdown Section -->
             <section class="hero">     
@@ -1331,11 +1561,11 @@
                                 <div class="card-chip"><div class="chip-line"></div><div class="chip-line"></div><div class="chip-line"></div><div class="chip-line"></div><div class="chip-main"></div></div>
                             </div>
                             <div style="text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Klik untuk melihat nomor rekening</div>
-                            <div class="digital-gift-footer"><div class="card-holder">Agus Suka Wirawan</div></div>
+                            <div class="digital-gift-footer"><div class="card-holder">NI KOMANG ARTINI</div></div>
                         </div>
                         <div class="digital-gift-face digital-gift-back">
                             <div class="magnetic-strip"></div>
-                            <div class="back-content"><div class="card-number" id="account-number">461001007277530</div><div class="card-holder">a.n. Agus Suka Wirawan</div><button class="copy-button-digital" id="copy-button"><span>Salin</span></button></div>
+                            <div class="back-content"><div class="card-number" id="account-number">024101045244502</div><div class="card-holder">a.n. NI KOMANG ARTINI</div><button class="copy-button-digital" id="copy-button"><span>Salin</span></button></div>
                         </div>
                     </div>
                 </div>
@@ -1461,6 +1691,65 @@
         #music-toast .toast-content { display: flex; flex-direction: column; }
         #music-toast .toast-title { font-weight: 600; font-size: 0.9rem; }
         #music-toast .toast-song { font-size: 0.8rem; opacity: 0.8; }
+    
+        /* [ADDED] Missing keyframes animations */
+        @keyframes card-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: 200% center;
+            }
+            100% {
+                background-position: -200% center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+    
+        /* [ADDED] Performance optimizations */
+        .sweet-card,
+        .event-card-new,
+        #gift-box {
+            will-change: transform;
+        }
+        
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .animated-element {
+            contain: layout style paint;
+        }
+
     </style>
 
     <!-- [BARU] SVG Filter untuk efek liquid glass di navigasi (tidak terlihat) -->
@@ -1503,8 +1792,8 @@
             },
             gift: {
                 bankName: "BRI",
-                accountHolder: "Agus Suka Wirawan",
-                accountNumber: "461001007277530",
+                accountHolder: "NI KOMANG ARTINI",
+                accountNumber: "024101045244502",
                 bankLogoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/2560px-BRI_2020.svg.png"
             },
             images: {
@@ -1520,8 +1809,8 @@
                 eventCardImage: "https://raw.githubusercontent.com/wayanku/undangan-ulang-tahun-oktavianti/refs/heads/main/Desain%20tanpa%20judul%20(4)%20(1).png"
             },
             music: {
-                url: "https://github.com/wayanku/undangan-ulang-tahun-oktavianti/raw/refs/heads/main/ABBA%20-%20Dancing%20Queen%20(Official%20Music%20Video).mp3",
-                title: "ABBA - Dancing Queen"
+                url: "https://peljkofgteuqedzfjlhi.supabase.co/storage/v1/object/public/mancing%20jepang/Taylor%20Swift%20-%20Betty.mp3",
+                title: "Taylor Swift - Betty"
             },
             creator: {
                 name: "storybali undangan",
