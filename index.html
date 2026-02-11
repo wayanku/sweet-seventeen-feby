@@ -129,6 +129,7 @@
             line-height: 1;
             color: white; /* [DIUBAH] Mengubah warna nama menjadi putih */
             text-shadow: 0 2px 5px rgba(0,0,0,0.15); /* Bayangan halus untuk kedalaman */
+            animation: text-glow-pulse 3s ease-in-out infinite; /* [BARU] Animasi glow */
         }
         .sweet-card img { width: 100%; max-width: clamp(90px, 35vw, 160px); margin-top: 10px; } /* [DIUBAH] Menambah margin atas agar simetris */ 
         /* [BARU] Styling untuk teks yang dipindahkan ke dalam kartu */
@@ -1096,6 +1097,30 @@
         .animated-element {
             contain: layout style paint;
         }
+        
+        /* [BARU] Efek Flash Putih untuk Transisi Dramatis */
+        #white-flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 9999; pointer-events: none;
+            opacity: 0; transition: opacity 1s ease-out;
+        }
+
+        /* [BARU] Efek Sparkles/Fireflies Background */
+        .sparkle {
+            position: fixed; background: white; border-radius: 50%;
+            pointer-events: none; z-index: 100; opacity: 0;
+        }
+        @keyframes twinkle-float {
+            0% { transform: translateY(0) scale(0.5); opacity: 0.2; }
+            50% { opacity: 0.8; box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.6); }
+            100% { transform: translateY(-20px) scale(1); opacity: 0.2; }
+        }
+        
+        /* [BARU] Animasi Glow untuk Nama */
+        @keyframes text-glow-pulse {
+            0%, 100% { text-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+            50% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 255, 255, 0.8); }
+        }
 
     </style>
 </head>
@@ -1486,7 +1511,7 @@
                     <div><span id="minutes">0</span><p>Menit</p></div>
                     <div><span id="seconds">0</span><p>Detik</p></div>
                 </div>
-                <p class="animated fade-in-up delay-3 section-subtitle" style="margin-bottom: 0;">"Saya akan sangat berbahagia jika Anda dapat hadir dan bergabung bersama saya dalam merayakan momen istimewa ini."</p>
+                <p id="hero-quote" class="animated fade-in-up delay-3 section-subtitle" style="margin-bottom: 0;">"Saya akan sangat berbahagia jika Anda dapat hadir dan bergabung bersama saya dalam merayakan momen istimewa ini."</p>
 
             </section>
     
@@ -1862,6 +1887,22 @@
             let musicPlayedOnce = false;
 
             // --- [BARU] FUNGSI UNTUK EFEK 3D PADA KARTU ---
+            // --- [BARU] FUNGSI UNTUK MEMBUAT SPARKLES ---
+            const initSparkles = () => {
+                const container = document.body;
+                for (let i = 0; i < 25; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'sparkle';
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.top = Math.random() * 100 + 'vh';
+                    const size = Math.random() * 3 + 2;
+                    el.style.width = size + 'px';
+                    el.style.height = size + 'px';
+                    el.style.animation = `twinkle-float ${Math.random() * 4 + 3}s infinite ease-in-out alternate ${Math.random() * 2}s`;
+                    container.appendChild(el);
+                }
+            };
+
             const init3dCardEffect = () => {
                 const card = document.querySelector('.event-card-new');
                 if (!card) return;
@@ -1900,6 +1941,12 @@
                 // 1. Animasikan kado terbuka dan sembunyikan teksnya
                 preCover.classList.add('opened'); // Animasikan kado terbuka
                 document.getElementById('pre-cover-content').style.opacity = '0'; // Sembunyikan teks
+                
+                // [BARU] Efek Flash Putih
+                const flash = document.createElement('div');
+                flash.id = 'white-flash';
+                document.body.appendChild(flash);
+                requestAnimationFrame(() => { flash.style.opacity = '1'; });
 
                 // [BARU] Confetti dari tengah gift box
                 const giftBoxRect = giftBox.getBoundingClientRect();
@@ -1908,12 +1955,24 @@
 
                 // Tembakkan confetti setelah sedikit jeda agar sinkron dengan tutup terbuka
                 setTimeout(() => {
-                    confetti({
-                        particleCount: 150, spread: 120, startVelocity: 45,
-                        origin: { x: originX, y: originY },
-                        colors: ['#A63C4F', '#C5A059', '#ffffff'],
+                    const count = 200;
+                    const defaults = {
+                        origin: { y: originY, x: originX },
+                        colors: ['#A63C4F', '#C5A059', '#ffffff', '#D65A72'],
                         zIndex: 202
-                    });
+                    };
+
+                    function fire(particleRatio, opts) {
+                        confetti(Object.assign({}, defaults, opts, {
+                            particleCount: Math.floor(count * particleRatio)
+                        }));
+                    }
+
+                    fire(0.25, { spread: 26, startVelocity: 55 });
+                    fire(0.2, { spread: 60 });
+                    fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+                    fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+                    fire(0.1, { spread: 120, startVelocity: 45 });
                 }, 200);
 
 
@@ -1921,6 +1980,12 @@
                 setTimeout(() => {
                     cover.style.visibility = 'visible';
                     cover.style.opacity = '1';
+                    
+                    // [BARU] Hilangkan flash dan mulai sparkles
+                    flash.style.opacity = '0';
+                    setTimeout(() => flash.remove(), 1000);
+                    initSparkles();
+                    
                 }, 300);
 
 
@@ -1941,6 +2006,23 @@
                     initNavObserver(); // [BARU] Jalankan observer untuk navigasi
 
 
+                    // [BARU] Efek Mengetik untuk Kutipan
+                    const typeWriter = (element, text, i = 0) => {
+                        if (i === 0) {
+                            element.textContent = '';
+                            element.classList.add('typing');
+                        }
+                        if (i < text.length) {
+                            element.textContent += text.charAt(i);
+                            setTimeout(() => typeWriter(element, text, i + 1), 50);
+                        } else {
+                            element.classList.remove('typing');
+                        }
+                    };
+                    const quoteElement = document.getElementById('hero-quote');
+                    const quoteText = quoteElement.textContent;
+                    setTimeout(() => typeWriter(quoteElement, quoteText), 1500);
+
                     // [BARU] Memicu animasi untuk section hero secara manual
                     // karena section ini sudah terlihat saat halaman dibuka.
                     setTimeout(() => {
@@ -1951,6 +2033,7 @@
                     setTimeout(loadWishes, 500);
                 }, 1200); // Waktu disesuaikan agar konten muncul saat kado menghilang
             };
+
             openGiftButton.addEventListener('click', handleOpenGift);
             giftBox.addEventListener('click', handleOpenGift);
             
